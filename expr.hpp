@@ -68,7 +68,7 @@ struct Int_lit : Expr
 
 public:
   Int_lit( int val, Type* t)
-    : Expr(bool_lit), m_val(val), m_type(t)
+    : Expr(int_lit), m_val(val), m_type(t)
   { }
 
 	int get_val() const { return m_val; }
