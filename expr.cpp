@@ -26,6 +26,12 @@ print_int_lit(std::ostream& os, Int_lit const* e)
 }
 
 static void
+print_fl_lit(std::ostream& os, Fl_lit const* e)
+{
+  os << e->get_val();
+}
+
+static void
 print_add(std::ostream& os, Add_expr const* e)
 {
   os << "(" << *e->get_expr1() << " + " << *e->get_expr2() << ")";
@@ -130,8 +136,47 @@ print_id(std::ostream& os, Id_expr const* e)
 static void
 print_con(std::ostream& os, Con_expr const* e)
 {
-  os << "(If" << *e->get_expr1() << " Then " << *e->get_expr2() << " Else " << *e->get_expr3() << ")";
+  os << "(" << *e->get_expr1() << " ? " << *e->get_expr2() << " : " << *e->get_expr3() << ")";
 }
+
+static void
+print_assign(std::ostream& os, Assign_expr const* e)
+{
+  os << "(" << *e->get_expr1() << " <- " << *e->get_expr2() << ")";
+}
+
+static void
+print_fun_call(std::ostream& os, Fun_call const* e)
+{
+  if(e->get_params().size() == 0 )
+  {
+    os << *e->get_expr1() << "()";
+  }
+  else
+  {
+    os << *e->get_expr1() << "(";
+
+    auto params = e->get_params();
+
+    for(int i = 0; i < params.size(); i++)
+    {
+      os << *params[i];
+
+      if (i == params.size()- 1)
+        os << ")";
+      else 
+        os << ",";
+    }
+
+  }
+}
+
+static void
+print_val_conv(std::ostream& os, Val_conv const* e)
+{
+  os << "val"  << *e->get_expr1();
+}
+
 
 
 void
@@ -143,6 +188,9 @@ print(std::ostream& os, Expr const* e)
   
   case Expr::int_lit:
     return print_int_lit(os, static_cast<Int_lit const*>(e));
+
+  case Expr::fl_lit:
+    return print_fl_lit(os, static_cast<Fl_lit const*>(e));
 
   case Expr::add_expr:
     return print_add(os, static_cast<Add_expr const*>(e));
@@ -198,6 +246,16 @@ print(std::ostream& os, Expr const* e)
   case Expr::con_expr:
     return print_con(os, static_cast<Con_expr const*>(e));
 
+  case Expr::assign_expr:
+    return print_assign(os, static_cast<Assign_expr const*>(e));
+
+  case Expr::fun_call:
+    return print_fun_call(os, static_cast<Fun_call const*>(e));
+
+  case Expr::val_conv:
+    return print_val_conv(os, static_cast<Val_conv const*>(e));
+
+
   }
 }
 
@@ -239,6 +297,12 @@ print_bool_sexpr(std::ostream& os, Bool_lit const* e)
 
 static void
 print_int_sexpr(std::ostream& os, Int_lit const* e)
+{
+  os << "(" << *e->get_type() << " " << e->get_val() << ")";
+}
+
+static void
+print_fl_sexpr(std::ostream& os, Fl_lit const* e)
 {
   os << "(" << *e->get_type() << " " << e->get_val() << ")";
 }
@@ -383,6 +447,48 @@ print_con_sexpr(std::ostream& os, Con_expr const* e)
   sexpr_r(os, *e->get_expr3()) << ")";
 }
 
+static void
+print_assign_sexpr(std::ostream& os, Assign_expr const* e)
+{
+  os << "(Assignment " ;
+  sexpr_r(os, *e->get_expr1()) << " ";
+  sexpr_r(os, *e->get_expr2()) << ")";
+}
+
+static void
+print_fun_call_sexpr(std::ostream& os, Fun_call const* e)
+{
+  if(e->get_params().size() == 0 )
+  {
+    os << "(Function Call ";
+    sexpr_r(os, *e->get_expr1()) << "()";
+  }
+  else
+  {
+    sexpr_r(os, *e->get_expr1()) << "(";
+
+    auto params = e->get_params();
+
+    for(int i = 0; i < params.size(); i++)
+    {
+      sexpr_r(os, *params[i]);
+
+      if (i == params.size()- 1)
+        os << ")";
+      else 
+        os << ",";
+    }
+
+  }
+}
+
+static void
+print_val_conv_sexpr(std::ostream& os, Val_conv const* e)
+{
+  os << "(Value Conversion of ";
+  sexpr_r(os, *e->get_expr1()) << ")";
+}
+
 void
 sexpr(std::ostream& os, Expr const* e)
 {
@@ -392,6 +498,9 @@ sexpr(std::ostream& os, Expr const* e)
   
   case Expr::int_lit:
     return print_int_sexpr(os, static_cast<Int_lit const*>(e));
+
+  case Expr::fl_lit:
+    return print_fl_sexpr(os, static_cast<Fl_lit const*>(e));
 
   case Expr::add_expr:
     return print_add_sexpr(os, static_cast<Add_expr const*>(e));
@@ -446,6 +555,15 @@ sexpr(std::ostream& os, Expr const* e)
 
   case Expr::con_expr:
     return print_con_sexpr(os, static_cast<Con_expr const*>(e));
+
+  case Expr::assign_expr:
+    return print_assign_sexpr(os, static_cast<Assign_expr const*>(e));
+
+  case Expr::fun_call:
+    return print_fun_call_sexpr(os, static_cast<Fun_call const*>(e));
+
+  case Expr::val_conv:
+    return print_val_conv_sexpr(os, static_cast<Val_conv const*>(e));
 
   }
 }
@@ -604,6 +722,47 @@ print_con_debug(std::ostream& os, Con_expr const* e)
   debug_e(os, *e->get_expr3()) << "))";
 }
 
+static void
+print_assign_debug(std::ostream& os, Assign_expr const* e)
+{
+  os << "(Conditional: " << e << "(" ;
+  debug_e(os, *e->get_expr1()) << " ";
+  debug_e(os, *e->get_expr2()) << "))";
+}
+
+static void
+print_fun_call_debug(std::ostream& os, Fun_call const* e)
+{
+  if(e->get_params().size() == 0 )
+  {
+    os << "(Function Call ";
+    debug_e(os, *e->get_expr1()) << "()";
+  }
+  else
+  {
+    debug_e(os, *e->get_expr1()) << "(";
+
+    auto params = e->get_params();
+
+    for(int i = 0; i < params.size(); i++)
+    {
+      debug_e(os, *params[i]);
+
+      if (i == params.size()- 1)
+        os << ")";
+      else 
+        os << ",";
+    }
+
+  }
+}
+
+static void
+print_val_conv_debug(std::ostream& os, Val_conv const* e)
+{
+  os << "(Value Conversion of ";
+  debug_e(os, *e->get_expr1()) << ")";
+}
 
 void
 debug(std::ostream& os, Expr const* e)
@@ -668,6 +827,16 @@ debug(std::ostream& os, Expr const* e)
 
   case Expr::con_expr:
     return print_con_debug(os, static_cast<Con_expr const*>(e));
+
+  case Expr::assign_expr:
+    return print_assign_debug(os, static_cast<Assign_expr const*>(e));
+
+  case Expr::fun_call:
+    return print_fun_call_debug(os, static_cast<Fun_call const*>(e));
+
+  case Expr::val_conv:
+    return print_val_conv_debug(os, static_cast<Val_conv const*>(e));
+
 
   }
 }

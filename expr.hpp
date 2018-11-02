@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iosfwd>
+#include <vector>
 
 
 class Type;
@@ -12,6 +13,7 @@ struct Expr
 	{
    		bool_lit,
    	 	int_lit,
+   	 	fl_lit,
    	 	id_expr,
    	 	add_expr,
    	 	sub_expr,
@@ -30,6 +32,9 @@ struct Expr
     	and_expr,
     	or_expr,
     	not_expr,
+    	assign_expr,
+    	fun_call,
+    	val_conv
 	};
 
 protected:
@@ -72,6 +77,23 @@ public:
   { }
 
 	int get_val() const { return m_val; }
+	Type* get_type() const { return m_type; }
+
+private:
+
+	int m_val;
+	Type * m_type;
+};
+
+struct Fl_lit : Expr
+{
+
+public:
+  Fl_lit( float val, Type* t)
+    : Expr(fl_lit), m_val(val), m_type(t)
+  { }
+
+	float get_val() const { return m_val; }
 	Type* get_type() const { return m_type; }
 
 private:
@@ -416,6 +438,62 @@ private:
 	Expr* m_e3;
 	
 };
+
+struct Assign_expr : Expr
+{
+
+public:
+	Assign_expr(Expr* e1, Expr* e2)
+		: Expr(assign_expr), m_e1(e1), m_e2(e2)
+	{ }
+
+	Expr* get_expr1() const {return m_e1;}
+	Expr* get_expr2() const {return m_e2;}
+
+
+private:
+
+	Expr* m_e1;
+	Expr* m_e2;
+	
+};
+
+struct Fun_call : Expr
+{
+
+public:
+	Fun_call(Expr* e1, std::vector<Expr*> params)
+		: Expr(fun_call), m_e1(e1), m_params(params)
+	{ }
+
+	Expr* get_expr1() const {return m_e1;}
+	std::vector<Expr*> get_params() const { return m_params; }
+
+
+private:
+
+	Expr* m_e1;
+	std::vector<Expr*> m_params;
+	
+};
+
+struct Val_conv : Expr
+{
+
+public:
+	Val_conv(Expr* e1)
+		: Expr(val_conv), m_e1(e1)
+	{ }
+
+	Expr* get_expr1() const {return m_e1;}
+
+
+private:
+
+	Expr* m_e1;
+	
+};
+
 
 //operators and functions
 
