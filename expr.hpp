@@ -43,9 +43,11 @@ protected:
 
 public:
   Kind get_kind() const { return m_kind; }
+  Type* get_type() const { return m_type; }
 
 private:
   Kind m_kind;
+  Type* m_type;
 
 };
 
@@ -106,18 +108,19 @@ struct Add_expr : Expr
 {
 
 public:
-	Add_expr(Expr* e1, Expr* e2)
-		: Expr(add_expr), m_e1(e1), m_e2(e2)
+	Add_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(add_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
-
+	Type* get_type() const { return m_type; }
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+	Type* m_type;
 	
 };
 
@@ -125,18 +128,20 @@ struct Sub_expr : Expr
 {
 
 public:
-	Sub_expr(Expr* e1, Expr* e2)
-		: Expr(sub_expr), m_e1(e1), m_e2(e2)
+	Sub_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(sub_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -144,18 +149,20 @@ struct Mul_expr : Expr
 {
 
 public:
-	Mul_expr(Expr* e1, Expr* e2)
-		: Expr(mul_expr), m_e1(e1), m_e2(e2)
+	Mul_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(mul_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -163,18 +170,20 @@ struct And_expr : Expr
 {
 
 public:
-	And_expr(Expr* e1, Expr* e2)
-		: Expr(and_expr), m_e1(e1), m_e2(e2)
+	And_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(and_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -182,56 +191,62 @@ struct Or_expr : Expr
 {
 
 public:
-	Or_expr(Expr* e1, Expr* e2)
-		: Expr(or_expr), m_e1(e1), m_e2(e2)
+	Or_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(or_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
-	
+	Type* m_type;
+		
 };
 
 struct Eq_expr : Expr
 {
 
 public:
-	Eq_expr(Expr* e1, Expr* e2)
-		: Expr(eq_expr), m_e1(e1), m_e2(e2)
+	Eq_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(eq_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
-	
+	Type* m_type;
+		
 };
 
 struct Ne_expr : Expr
 {
 
 public:
-	Ne_expr(Expr* e1, Expr* e2)
-		: Expr(ne_expr), m_e1(e1), m_e2(e2)
+	Ne_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(ne_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -240,18 +255,20 @@ struct Lt_expr : Expr
 {
 
 public:
-	Lt_expr(Expr* e1, Expr* e2)
-		: Expr(lt_expr), m_e1(e1), m_e2(e2)
+	Lt_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(lt_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+	Type* m_type;
 	
 };
 
@@ -259,18 +276,20 @@ struct Gt_expr : Expr
 {
 
 public:
-	Gt_expr(Expr* e1, Expr* e2)
-		: Expr(gt_expr), m_e1(e1), m_e2(e2)
+	Gt_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(gt_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -278,56 +297,62 @@ struct Lte_expr : Expr
 {
 
 public:
-	Lte_expr(Expr* e1, Expr* e2)
-		: Expr(lte_expr), m_e1(e1), m_e2(e2)
+	Lte_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(lte_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
-	
+	Type* m_type;
+		
 };
 
 struct Gte_expr : Expr
 {
 
 public:
-	Gte_expr(Expr* e1, Expr* e2)
-		: Expr(gte_expr), m_e1(e1), m_e2(e2)
+	Gte_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(gte_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
-	
+	Type* m_type;
+		
 };
 
 struct Div_expr : Expr
 {
 
 public:
-	Div_expr(Expr* e1, Expr* e2)
-		: Expr(div_expr), m_e1(e1), m_e2(e2)
+	Div_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(div_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -335,18 +360,20 @@ struct Rem_expr : Expr
 {
 
 public:
-	Rem_expr(Expr* e1, Expr* e2)
-		: Expr(rem_expr), m_e1(e1), m_e2(e2)
+	Rem_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(rem_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
+		Type* m_type;
 	
 };
 
@@ -354,16 +381,18 @@ struct Not_expr : Expr
 {
 
 public:
-	Not_expr(Expr* e1)
-		: Expr(not_expr), m_e1(e1)
+	Not_expr(Expr* e1, Type* t)
+		: Expr(not_expr), m_e1(e1), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
+		Type* m_type;
 	
 };
 
@@ -371,64 +400,71 @@ struct Neg_expr : Expr
 {
 
 public:
-	Neg_expr(Expr* e1)
-		: Expr(neg_expr), m_e1(e1)
+	Neg_expr(Expr* e1, Type* t)
+		: Expr(neg_expr), m_e1(e1), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
-	
+	Type* m_type;
+		
 };
 
 struct Rec_expr : Expr
 {
 
 public:
-	Rec_expr(Expr* e1)
-		: Expr(rec_expr), m_e1(e1)
+	Rec_expr(Expr* e1, Type* t)
+		: Expr(rec_expr), m_e1(e1), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
-	
+	Type* m_type;
+		
 };
 
 struct Id_expr : Expr
 {
 
 public:
-	Id_expr(Name* id)
-		: Expr(id_expr), m_id(id)
+	Id_expr(Name* id, Type* t)
+		: Expr(id_expr), m_id(id), m_type(t)
 	{ }
 
 	Name* get_id() const {return m_id;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Name* m_id;
-	
+	Type* m_type;
+		
 };
 
 struct Con_expr : Expr
 {
 
 public:
-	Con_expr(Expr* e1, Expr* e2, Expr* e3)
-		: Expr(con_expr), m_e1(e1), m_e2(e2), m_e3(e3)
+	Con_expr(Expr* e1, Expr* e2, Expr* e3, Type* t)
+		: Expr(con_expr), m_e1(e1), m_e2(e2), m_e3(e3), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
 	Expr* get_expr3() const {return m_e3;}
+	Type* get_type() const { return m_type; }
 
 
 private:
@@ -436,62 +472,69 @@ private:
 	Expr* m_e1;
 	Expr* m_e2;
 	Expr* m_e3;
-	
+	Type* m_type;
+		
 };
 
 struct Assign_expr : Expr
 {
 
 public:
-	Assign_expr(Expr* e1, Expr* e2)
-		: Expr(assign_expr), m_e1(e1), m_e2(e2)
+	Assign_expr(Expr* e1, Expr* e2, Type* t)
+		: Expr(assign_expr), m_e1(e1), m_e2(e2), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	Expr* get_expr2() const {return m_e2;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	Expr* m_e2;
-	
+	Type* m_type;
+		
 };
 
 struct Fun_call : Expr
 {
 
 public:
-	Fun_call(Expr* e1, std::vector<Expr*> params)
-		: Expr(fun_call), m_e1(e1), m_params(params)
+	Fun_call(Expr* e1, std::vector<Expr*> params, Type* t)
+		: Expr(fun_call), m_e1(e1), m_params(params), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
 	std::vector<Expr*> get_params() const { return m_params; }
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
 	std::vector<Expr*> m_params;
-	
+	Type* m_type;
+		
 };
 
 struct Val_conv : Expr
 {
 
 public:
-	Val_conv(Expr* e1)
-		: Expr(val_conv), m_e1(e1)
+	Val_conv(Expr* e1, Type* t)
+		: Expr(val_conv), m_e1(e1), m_type(t)
 	{ }
 
 	Expr* get_expr1() const {return m_e1;}
+	Type* get_type() const { return m_type; }
 
 
 private:
 
 	Expr* m_e1;
-	
+	Type* m_type;
+		
 };
 
 

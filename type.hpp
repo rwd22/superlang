@@ -28,6 +28,8 @@ protected:
 
 public:
   Kind get_kind() const { return m_kind; }
+  bool is_reference() const { return m_kind == ref_type; }
+  bool is_bool() const { return m_kind == bool_type; }
 
 
 private:
@@ -35,6 +37,8 @@ private:
 };
 
 //classes for types
+
+
 
 class Bool_type : public Type
 {
