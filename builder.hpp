@@ -67,7 +67,9 @@ public:
   Expr* make_neg(Expr* e1);
 
 
-  //Expr* make_cond(Expr* e1, Expr* e2, Expr* e3);
+  Expr* make_cond(Expr* e1, Expr* e2, Expr* e3);
+
+  Expr* make_assign(Expr* e1, Expr* e2);
 
 
 

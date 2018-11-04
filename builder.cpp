@@ -80,13 +80,13 @@ Builder::make_not(Expr* e1)
   return new Not_expr(e1, e1->get_type());
 }
 
-/*Expr*
+Expr*
 Builder::make_cond(Expr* e1, Expr* e2, Expr* e3)
 {
   e1 = require_bool(e1);
   std::tie(e2, e3) = require_common(e2, e3);
   return new Con_expr( e1, e2, e3, e2->get_type());
-}*/
+}
 
 
 Expr*
@@ -171,6 +171,20 @@ Builder::make_neg(Expr* e1)
   return new Neg_expr(e1, e1->get_type());
 }
 
+Expr*
+Builder::make_assign(Expr* e1, Expr* e2)
+{
+  e2 = convert_to_value(e2);
+  e1 = require_reference_to(e1, e2->get_type());
+  return new Assign_expr(e1, e2,e1->get_type());
+}
+
+
+
+
+
+
+
 Stmt*
 Builder::make_block(std::vector<Stmt*> const& ss)
 {
@@ -225,6 +239,11 @@ Builder::make_return(Decl* d, Expr* e)
   
   return new Return_stmt(var->get_initializer());
 }
+
+
+
+
+
 
 Decl*
 Builder::make_variable(Name* n, Type* t, Expr* e)
@@ -388,7 +407,7 @@ Builder::require_type(Expr* e, Type* t)
 }
 
 
-/*
+
 std::pair<Expr*, Expr*>
 Builder::require_same_value(Expr* e1, Expr* e2)
 {
@@ -408,7 +427,7 @@ Builder::require_common(Expr* e1, Expr* e2)
     return require_same(e1, e2);
 
   return require_same_value(e1, e2);
-}*/
+}
 
 
 
