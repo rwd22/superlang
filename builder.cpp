@@ -3,10 +3,12 @@
 #include "expr.hpp"
 #include "decl.hpp"
 #include "stmt.hpp"
+#include "name.hpp"
 
 #include <iostream>
-
 #include <vector>
+
+//expression based typing 
 
 Expr*
 Builder::convert_to_value(Expr* e)
@@ -177,6 +179,46 @@ Builder::make_assign(Expr* e1, Expr* e2)
   e2 = convert_to_value(e2);
   e1 = require_reference_to(e1, e2->get_type());
   return new Assign_expr(e1, e2,e1->get_type());
+}
+
+Expr*
+Builder::make_call(std::vector<Expr*> const& es, Expr* e1)
+{
+
+  std::vector<Expr*> conv = es;
+
+  Expr*& fn = conv[0];
+  fn = require_function(fn);
+
+  Fun_type* ft = static_cast<Fun_type*>(fn->get_type());
+
+  auto parms = ft->get_param_types();
+  auto args = std::vector<Expr*>( conv.begin() + 1, conv.end() );
+
+
+  if (parms.size() < args.size())
+    throw std::runtime_error("Too many arguments given");
+  if (parms.size() > args.size())
+    throw std::runtime_error("Too few arguments given");
+
+  auto par = parms.begin();
+  auto ar = args.begin();
+  auto esi = conv.begin();
+  while (par != parms.end()) {
+
+    Name n;
+    n.str = "Dummy";
+
+    Var_decl dummy(&n, *par, *esi);
+    copy_initialize(&dummy, *ar);
+    *ar = dummy.get_initializer();
+
+    ++par;
+    ++ar;
+    ++esi;
+  }
+  
+  return new Fun_call(e1, std::move(conv), ft->get_ret_type());
 }
 
 
@@ -429,6 +471,17 @@ Builder::require_common(Expr* e1, Expr* e2)
   return require_same_value(e1, e2);
 }
 
+Expr*
+Builder::require_function(Expr* e)
+{
+  Expr* c = convert_to_value(e);
+
+  Type* t = c->get_type();
+  if (t->is_function())
+    return c;
+
+  throw std::runtime_error("Expression is not a function");
+}
 
 
 

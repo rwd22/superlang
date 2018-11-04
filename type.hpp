@@ -31,15 +31,12 @@ public:
   bool is_reference() const { return m_kind == ref_type; }
   bool is_reference_to(Type const* that) const;
   bool is_bool() const { return m_kind == bool_type; }
-  //bool is_same_as(Type const* that) const;
   bool is_int() const { return m_kind == int_type; }
-  /// Returns true if this is an integral type.
+  bool is_function() const { return m_kind == fun_type; }
   bool is_float() const { return m_kind == float_type; }
-    bool is_arithmetic() const {return is_int() || is_float();}
-    bool is_object() const  { return m_kind != ref_type; }
-  /// Returns true if this is `float`.
-  //bool is_same(Type const* a, Type const* b);
- // char const* get_kind_name() const;
+  bool is_arithmetic() const {return is_int() || is_float();}
+  bool is_object() const  { return m_kind != ref_type; }
+
 
 
 private:
