@@ -229,6 +229,17 @@ debug(std::ostream& os, Type const* t)
 }
 
 
+bool
+Type::is_reference_to(Type const* that) const
+{
+  if (is_reference()) {
+    Ref_type const* ref = static_cast<Ref_type const*>(this);
+    if (ref->get_referent_type() == that)
+      return true;
+  }
+  return false;
+}
+
 
 /*char const*
 Type::get_kind_name() const

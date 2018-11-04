@@ -1,6 +1,7 @@
 #pragma once
 
 #include <iostream>
+#include <assert.h>  
 
 class Type;
 struct Expr;
@@ -22,11 +23,19 @@ protected:
 
 public:
   Kind get_kind() const { return m_kind; }
-
+  bool is_variable() const { return m_kind == var_decl; }
+    bool is_reference() const;
+      virtual Type* get_type() const { return nullptr; }  
 
 private:
   Kind m_kind;
 };
+
+
+
+
+
+
 
 //declaration structures
 
@@ -40,12 +49,22 @@ public:
   Name* get_name() const { return m_name; }
   Type* get_type() const { return m_type; }
   Expr* get_e() const { return m_exp; }
+  void set_initializer(Expr* e);
+  Expr* get_initializer() const { return m_init; }
 
 private:
   Type* m_type;
   Expr* m_exp;
   Name* m_name;
+   Expr* m_init;
 };
+
+inline void
+Var_decl::set_initializer(Expr* e)
+{
+  assert(!m_init);
+  m_init = e;
+}
 
 struct Ref_decl : public Decl
 {

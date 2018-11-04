@@ -2,8 +2,11 @@
 #include "type.hpp"
 #include "expr.hpp"
 #include "decl.hpp"
+#include "stmt.hpp"
 
 #include <iostream>
+
+#include <vector>
 
 Expr*
 Builder::convert_to_value(Expr* e)
@@ -168,6 +171,97 @@ Builder::make_neg(Expr* e1)
   return new Neg_expr(e1, e1->get_type());
 }
 
+Stmt*
+Builder::make_block(std::vector<Stmt*> const& ss)
+{
+  return new Block_stmt(ss);
+}
+
+Stmt*
+Builder::make_tern(Expr* e, Stmt* s1, Stmt* s2)
+{
+  e = require_bool(e);
+  return new Ternary_stmt(e, s1, s2);
+}
+
+Stmt*
+Builder::make_while(Expr* e, Stmt* s1)
+{
+  e = require_bool(e);
+  return new While_stmt(e, s1);
+}
+
+Stmt*
+Builder::make_break()
+{
+  return new Break_stmt();
+}
+
+Stmt*
+Builder::make_continue()
+{
+  return new Cont_stmt();
+}
+
+Stmt*
+Builder::make_expression(Expr* e)
+{
+  return new Expr_stmt(e);
+}
+
+Stmt*
+Builder::make_local_def(Decl* d)
+{
+  return new Loc_def_stmt(d);
+}
+
+Stmt*
+Builder::make_return(Decl* d, Expr* e)
+{
+  assert(d->is_variable());
+  Var_decl* var = static_cast<Var_decl*>(d);
+  
+  copy_initialize(var, e);
+  
+  return new Return_stmt(var->get_initializer());
+}
+
+Decl*
+Builder::make_variable(Name* n, Type* t, Expr* e)
+{
+  return new Var_decl(n, t, e);
+}
+
+Decl*
+Builder::make_reference(Name* n, Type* t, Expr* e)
+{
+  return new Ref_decl(n, t, e);
+}
+
+Decl*
+Builder::make_function(Name* n, Type* t, std::vector<Decl*> decls, Stmt* s)
+{
+  return new Func_decl(n, t, decls, s);
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -261,6 +355,39 @@ Builder::require_arithmetic(Expr* e)
   return c;
 }
 
+Expr*
+Builder::require_reference_to(Expr* e, Type* t)
+{
+  Type* t1 = e->get_type();
+  if (t1->is_reference_to(t))
+    return e;
+  throw std::runtime_error("invalid reference");
+}
+
+Expr*
+Builder::require_value_of(Expr* e, Type* t)
+{
+  assert(t->is_object());
+
+  e = convert_to_value(e);
+
+  if (!(e->get_type() == t))
+    throw std::runtime_error("invalid operand");
+
+  return e;
+}
+
+
+Expr*
+Builder::require_type(Expr* e, Type* t)
+{
+  if (t->is_reference())
+    return require_reference_to(e, t);
+  else
+    return require_value_of(e, t);
+}
+
+
 /*
 std::pair<Expr*, Expr*>
 Builder::require_same_value(Expr* e1, Expr* e2)
@@ -282,3 +409,45 @@ Builder::require_common(Expr* e1, Expr* e2)
 
   return require_same_value(e1, e2);
 }*/
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+void
+Builder::copy_initialize(Decl* d, Expr* e)
+{
+  assert(d->is_variable());
+  Var_decl* var = static_cast<Var_decl*>(d);
+
+  if (d->is_reference())
+    return reference_initialize(d, e);
+
+  e = require_type(e, d->get_type());
+
+  var->set_initializer(e);
+}
+
+void
+Builder::reference_initialize(Decl* d, Expr* e)
+{
+  assert(d->is_variable());
+  Var_decl* var = static_cast<Var_decl*>(d);
+
+  e = require_type(e, d->get_type());
+
+  var->set_initializer(e);
+}

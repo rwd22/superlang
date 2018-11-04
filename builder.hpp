@@ -52,22 +52,56 @@ public:
   Expr* make_add(Expr* e1, Expr* e2);
 
 
-Expr* make_sub(Expr* e1, Expr* e2);
+  Expr* make_sub(Expr* e1, Expr* e2);
 
 
-Expr* make_mul(Expr* e1, Expr* e2);
+  Expr* make_mul(Expr* e1, Expr* e2);
 
 
-Expr* make_div(Expr* e1, Expr* e2);
+  Expr* make_div(Expr* e1, Expr* e2);
 
 
-Expr* make_rem(Expr* e1, Expr* e2);
+  Expr* make_rem(Expr* e1, Expr* e2);
 
 
-Expr* make_neg(Expr* e1);
+  Expr* make_neg(Expr* e1);
 
 
   //Expr* make_cond(Expr* e1, Expr* e2, Expr* e3);
+
+
+
+
+
+
+
+
+
+
+Stmt* make_block(std::vector<Stmt*> const& ss);
+
+Stmt* make_tern(Expr* e, Stmt* s1, Stmt* s2);
+
+Stmt* make_while(Expr* e, Stmt* s1);
+
+Stmt* make_break();
+
+Stmt* make_continue();
+
+Stmt* make_expression(Expr* e);
+
+Stmt* make_local_def(Decl* d);
+
+Stmt* make_return(Decl* d, Expr* e);
+
+
+Decl* make_variable(Name* n, Type* t, Expr* e);
+
+Decl* make_function(Name* n, Type* t, std::vector<Decl*> decls, Stmt* s);
+
+Decl* make_reference(Name* n, Type* t, Expr* e);
+
+
 
 
 
@@ -89,6 +123,17 @@ Expr* make_neg(Expr* e1);
 
   Expr* require_arithmetic(Expr* e);
 
+  Expr* require_reference_to(Expr* e, Type* t);
+
+  Expr* require_type(Expr* e, Type* t);
+
+  Expr* require_value_of(Expr* e, Type* t);
+
+
+
+    void reference_initialize(Decl* d, Expr* e);
+
+    void copy_initialize(Decl* d, Expr* e);
 
 
 
