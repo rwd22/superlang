@@ -118,40 +118,33 @@ Lexer::match_word()
 Token
 Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex or float
 {
-  char const* iter1 = m_first + 1;
+   char const* iter1 = m_first + 1;
+  while (!is_eof(iter1) && is_nondigit_or_digit(*iter1))
+    ++iter1;
+
+  
+
+  std::string id(m_first, iter1);
+  Symbol sym = m_syms->get(id);
+
+  m_first = iter1;
+
   Token::Name kind;
-  if(*iter1 == '0')
+
+  if(id.find('x') != std::string::npos || id.find('X') != std::string::npos)
   {
-    iter1++;
-
-    if(*iter1 == 'x' || *iter1 == 'X')
-    {
-      kind = Token::hex_literal;
-
-      while (!is_eof(iter1) && is_hexdigit(*iter1))
-        ++iter1;
-
-      m_first = iter1;  //advance
-
-      std::string id(m_first, iter1); //build
-      Symbol sym = m_syms->get(id);
-
-      return Token(kind, sym);
-    }
-
-    if(*iter1 == 'b' || *iter1 == 'B')
-    {
-      kind = Token::bin_literal;
-
-      while (!is_eof(iter1) && (*iter1 == '1' || *iter1 == '0') )
-        ++iter1;
-
-      std::string id(m_first, iter1); //build
-      Symbol sym = m_syms->get(id);
-
-      return Token(kind, sym);
-    }
+    kind = Token::hex_literal;
   }
+  if(id.find('b') != std::string::npos || id.find('B') != std::string::npos)
+  {
+    kind = Token::bin_literal;
+  }
+  else
+  {
+    kind = Token::dec_literal;
+  }
+
+  return Token(kind, sym);
   
 }
 

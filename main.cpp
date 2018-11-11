@@ -13,7 +13,7 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "#deee\nif(true);";
+  std::string test = "0b1010";
   
 
 
