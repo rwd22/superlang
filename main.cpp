@@ -1,30 +1,30 @@
-#include "type.hpp"
-#include "name.hpp"
-#include "stmt.hpp"
-#include "decl.hpp"
-#include "expr.hpp"
-#include "builder.hpp"
+#include "token.hpp"
+#include "lexer.hpp"
 
-
-#include <iostream>
 #include <vector>
-#include <string>
-
-void Whiletest();
-void LargeTest();
-void FunctTest();
-void FunctTestTwo();
+#include <iterator>
+#include <iostream>
+#include <fstream>
 
 int
-main() {
+main()
+{
+ 
 
-Builder build;
+  Symbol_table syms;
+
+  std::string test = "#deee\nif(true);";
+  
 
 
-build.make_bool(true);
 
 
+  Lexer lexer(syms, test);
 
+  for (std::string::iterator it = test.begin(); it!=test.end(); ++it) {
+  	Token tok = lexer.get_next_token();
+   std::cout << tok << '\n';
+ }
 }
 
 

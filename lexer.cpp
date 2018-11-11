@@ -97,10 +97,12 @@ Lexer::match_word()
   while (!is_eof(iter1) && is_nondigit_or_digit(*iter1))
     ++iter1;
 
-  m_first = iter1;
+  
 
   std::string id(m_first, iter1);
   Symbol sym = m_syms->get(id);
+
+  m_first = iter1;
 
   Token::Name kind;
   auto iter = m_kws.find(id);
@@ -118,40 +120,46 @@ Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex 
 {
   char const* iter1 = m_first + 1;
   Token::Name kind;
-  if(*iter1 == 'x' || *iter1 == 'X')
+  if(*iter1 == '0')
   {
-    kind = Token::hex_literal;
+    iter1++;
 
-    while (!is_eof(iter1) && is_hexdigit(*iter1))
-      ++iter1;
+    if(*iter1 == 'x' || *iter1 == 'X')
+    {
+      kind = Token::hex_literal;
 
-    m_first = iter1;  //advance
+      while (!is_eof(iter1) && is_hexdigit(*iter1))
+        ++iter1;
 
-    std::string id(m_first, iter1); //build
-    Symbol sym = m_syms->get(id);
+      m_first = iter1;  //advance
 
-    return Token(kind, sym);
+      std::string id(m_first, iter1); //build
+      Symbol sym = m_syms->get(id);
+
+      return Token(kind, sym);
+    }
+
+    if(*iter1 == 'b' || *iter1 == 'B')
+    {
+      kind = Token::bin_literal;
+
+      while (!is_eof(iter1) && (*iter1 == '1' || *iter1 == '0') )
+        ++iter1;
+
+      std::string id(m_first, iter1); //build
+      Symbol sym = m_syms->get(id);
+
+      return Token(kind, sym);
+    }
   }
-
-  if(*iter1 == 'b' || *iter1 == 'B')
-  {
-    kind = Token::bin_literal;
-
-    while (!is_eof(iter1) && (*iter1 == '1' || *iter1 == '0') )
-      ++iter1;
-
-    std::string id(m_first, iter1); //build
-    Symbol sym = m_syms->get(id);
-
-    return Token(kind, sym);
-  }
+  
 }
 
 Token
 Lexer::comment_match()
 {
   char const* iter1 = m_first + 1;
-  while(!is_eof(iter1) && !'\n' )
+  while(!is_eof(iter1) && *iter1!='\n')
     ++iter1;
 
   m_first = iter1;
@@ -233,7 +241,7 @@ Lexer::get_next_token()
         return match_word();
       
       if (is_digit(*m_first))
-        return match_number();
+       return match_number();
 
       std::cerr << "error: " << m_line << ": invalid character";
       consume();
