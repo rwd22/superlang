@@ -168,6 +168,8 @@ Lexer::get_next_token()
       consume();
       continue;
 
+    case '#':
+        return comment_match();
     case '{':
       return match(Token::lbrace, 1);
     case '}':
@@ -212,8 +214,7 @@ Lexer::get_next_token()
       std::cerr << "error: " << m_line << ": " << "expected '=' after '!'\n";
       continue;
 
-    case '#':
-        return comment_match();
+
 
     default:
       if (is_nondigit(*m_first))

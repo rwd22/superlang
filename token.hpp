@@ -64,6 +64,9 @@ public:
     bool_literal,
     integer_literal,
     float_literal,
+    hex_literal,
+    bin_literal,
+    dec_literal,
 
     
     // identifiers

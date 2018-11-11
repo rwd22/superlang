@@ -56,6 +56,9 @@ str(Token::Name k)
   case Token::integer_literal: return "integer_literal";
   case Token::float_literal: return "float_literal";
   case Token::bool_literal: return "bool_literal";
+  case Token::hex_literal: return "hex_literal";
+  case Token::bin_literal: return "bin_literal";
+  case Token::dec_literal: return "dec_literal";
     
   case Token::digit: return "digit";
   case Token::nondigit: return "nondigit";
