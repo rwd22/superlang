@@ -116,7 +116,7 @@ Lexer::match_word()
 Token
 Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex or float
 {
-    char const* iter1 = m_first + 1;
+  char const* iter1 = m_first + 1;
   while (!is_eof(iter1) && is_nondigit_or_digit(*iter1))
     ++iter1;
 
@@ -131,6 +131,23 @@ Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex 
     kind = Token::identifier;
   else
     kind = iter->second;
+
+  return Token(kind, sym);
+}
+
+Token
+Lexer::comment_match()
+{
+  char const* iter1 = m_first + 1;
+  while(!is_eof(iter1) && !'\n')
+    ++iter1;
+
+  m_first = iter1;
+
+  std::string id(m_first, iter1);
+  Symbol sym = m_syms->get(id);
+
+  Token::Name kind = Token::comment;
 
   return Token(kind, sym);
 }
@@ -194,6 +211,9 @@ Lexer::get_next_token()
       consume();
       std::cerr << "error: " << m_line << ": " << "expected '=' after '!'\n";
       continue;
+
+    case '#':
+        return comment_match();
 
     default:
       if (is_nondigit(*m_first))

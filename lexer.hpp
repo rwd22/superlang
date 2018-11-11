@@ -30,6 +30,8 @@ private:
 
   Token match_number();
 
+  Token comment_match();
+
 private:
   Symbol_table* m_syms;
 
