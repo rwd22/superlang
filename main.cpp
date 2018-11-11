@@ -13,7 +13,7 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "0b1010";
+  std::string test = "if(red == true){blue = false;}";
   
 
 

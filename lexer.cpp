@@ -135,9 +135,13 @@ Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex 
   {
     kind = Token::hex_literal;
   }
-  if(id.find('b') != std::string::npos || id.find('B') != std::string::npos)
+  else if(id.find('b') != std::string::npos || id.find('B') != std::string::npos)
   {
     kind = Token::bin_literal;
+  }
+  else if(id.find('.') != std::string::npos || id.find('e') != std::string::npos || id.find('E') != std::string::npos)
+  {
+    kind = Token::float_literal;
   }
   else
   {
@@ -228,10 +232,12 @@ Lexer::get_next_token()
       continue;
 
 
-
     default:
       if (is_nondigit(*m_first))
         return match_word();
+
+     // if (is_digit(*m_first) && peek(1) == '.')
+       //return match_number();
       
       if (is_digit(*m_first))
        return match_number();
