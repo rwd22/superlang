@@ -116,37 +116,73 @@ Lexer::match_word()
 
 
 Token
-Lexer::match_number() //TEMPORARY think it needs to look and see if its dec hex or float
+Lexer::match_number()
 {
-   char const* iter1 = m_first + 1;
-  while (!is_eof(iter1) && is_nondigit_or_digit(*iter1))
-    ++iter1;
+  char const* iter1 = m_first + 1;
+  Symbol sym;
 
-  
+    Token::Name kind;
 
-  std::string id(m_first, iter1);
-  Symbol sym = m_syms->get(id);
-
-  m_first = iter1;
-
-  Token::Name kind;
-
-  if(id.find('x') != std::string::npos || id.find('X') != std::string::npos)
+  if(*m_first== '0')
   {
-    kind = Token::hex_literal;
-  }
-  else if(id.find('b') != std::string::npos || id.find('B') != std::string::npos)
-  {
-    kind = Token::bin_literal;
-  }
-  else if(id.find('.') != std::string::npos || id.find('e') != std::string::npos || id.find('E') != std::string::npos)
-  {
-    kind = Token::float_literal;
+    if(*(iter1 )=='x' || *(iter1 )=='X')
+    {
+      kind = Token::hex_literal;
+
+      ++iter1;
+
+      while (!is_eof(iter1) && (is_hexdigit(*iter1)))
+      ++iter1;
+    
+      std::string id(m_first, iter1);
+      sym = m_syms->get(id);
+
+      m_first = iter1;
+    }
+    else if(*(iter1)=='b' || *(iter1)=='B')
+    {
+      kind = Token::bin_literal;
+
+      ++iter1;
+
+      while (!is_eof(iter1) && (*iter1 == '0' || *iter1 == '1'))
+      ++iter1;
+    
+      std::string id(m_first, iter1);
+      sym = m_syms->get(id);
+
+      m_first = iter1;
+    }
+
+
   }
   else
   {
-    kind = Token::dec_literal;
+         
+    while (!is_eof(iter1) && (is_digit(*iter1) || *iter1 == '.' || *iter1 =='e' || *iter1 == 'E'))
+    ++iter1;
+  
+    std::string id(m_first, iter1);
+    sym = m_syms->get(id);
+
+    m_first = iter1;
+
+
+    if(id.find('.') != std::string::npos || id.find('e') != std::string::npos || id.find('E') != std::string::npos)
+    {
+      kind = Token::float_literal;
+    }
+    else
+    {
+      kind = Token::dec_literal;
+    }
+
   }
+
+
+
+
+
 
   return Token(kind, sym);
   
@@ -173,7 +209,7 @@ Lexer::comment_match()
 Token
 Lexer::get_next_token()
 {
-  while (true) {
+  while (!is_eof()) {
     switch (peek()) {
     case ' ':
     case '\t':
@@ -235,17 +271,17 @@ Lexer::get_next_token()
     default:
       if (is_nondigit(*m_first))
         return match_word();
-
-     // if (is_digit(*m_first) && peek(1) == '.')
-       //return match_number();
       
-      if (is_digit(*m_first))
+      if (is_digit(*m_first) || *m_first == '.')
        return match_number();
 
       std::cerr << "error: " << m_line << ": invalid character";
       consume();
       continue;
     }
+
+
   }
+  return Token();
 }
 

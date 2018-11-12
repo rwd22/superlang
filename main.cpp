@@ -13,7 +13,7 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "if(red == true){blue = false;}";
+  std::string test = "0x1af";
   
 
 
@@ -21,8 +21,7 @@ main()
 
   Lexer lexer(syms, test);
 
-  for (std::string::iterator it = test.begin(); it!=test.end(); ++it) {
-  	Token tok = lexer.get_next_token();
+  for (Token tok; tok =lexer.get_next_token();) {
    std::cout << tok << '\n';
  }
 }

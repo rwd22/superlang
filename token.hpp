@@ -83,6 +83,8 @@ public:
     : m_name(n), m_lex(sym), m_loc()
   { }
 
+  Token() : m_name(eof), m_lex(), m_loc(){}
+
   explicit operator bool() const { return m_name != eof; }
 
   Name get_name() const { return m_name; }

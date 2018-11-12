@@ -11,6 +11,9 @@ class Symbol
   Symbol(std::string const* str) : m_str(str) { }
 
 public:
+
+  Symbol(): m_str() {}
+  
   std::string const& str() const { return *m_str; }
 
   friend bool operator==(Symbol a, Symbol b) 
@@ -26,6 +29,7 @@ public:
 private:
   std::string const* m_str;  
 };
+
 
 
 class Symbol_table : std::unordered_set<std::string>
