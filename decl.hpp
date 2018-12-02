@@ -24,7 +24,7 @@ protected:
 public:
   Kind get_kind() const { return m_kind; }
   bool is_variable() const { return m_kind == var_decl; }
-    bool is_reference() const;
+    bool is_reference() const {  return is_variable() && get_type()->is_reference();}
       virtual Type* get_type() const { return nullptr; }  
 
 private:

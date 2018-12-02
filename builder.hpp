@@ -59,6 +59,8 @@ Expr* make_div(Expr* e1, Expr* e2);
 
 Expr* make_rem(Expr* e1, Expr* e2);
 
+Expr* make_rec(Expr* e1);
+
 Expr* make_neg(Expr* e1);
 
 Expr* make_cond(Expr* e1, Expr* e2, Expr* e3);

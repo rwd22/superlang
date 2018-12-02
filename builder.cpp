@@ -1,5 +1,5 @@
 #include "builder.hpp"
-#include "type.hpp"
+#include "type.cpp"
 #include "expr.hpp"
 #include "decl.hpp"
 #include "stmt.hpp"
@@ -7,8 +7,6 @@
 
 #include <iostream>
 #include <vector>
-
-//expression based typing 
 
 Expr*
 Builder::convert_to_value(Expr* e)
@@ -164,6 +162,12 @@ Builder::make_rem(Expr* e1, Expr* e2)
 {
   std::tie(e1, e2) = require_same_arithmetic(e1, e2);
   return new Rem_expr(e1, e2, e1->get_type());
+}
+
+Expr*
+Builder::make_rec(Expr* e1)
+{
+  return new Rec_expr(e1, e1->get_type());
 }
 
 Expr*

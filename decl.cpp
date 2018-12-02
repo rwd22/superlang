@@ -213,8 +213,8 @@ debug(std::ostream& os, Decl const* d)
 }
 
 
-bool
+/*bool
 Decl::is_reference() const
 {
   return is_variable() && get_type()->is_reference();
-}
+}*/

@@ -1,6 +1,6 @@
 #include "token.hpp"
 #include "lexer.hpp"
-
+#include "parser.hpp"
 #include <vector>
 #include <iterator>
 #include <iostream>
@@ -13,7 +13,7 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "0x1af";
+  std::string test = "if(a==true);";
   
 
 
