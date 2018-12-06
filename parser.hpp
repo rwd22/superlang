@@ -53,11 +53,19 @@ public:
   
   Expr* parse_multiplicative_expression();
 
+  Expr* parse_relational_expression();
+
   Expr* parse_prefix_expression();
 
   Expr* parse_postfix_expression();
 
   Expr* parse_primary_expression();
+
+  Expr* parse_equality_expression();
+
+  Expr* parse_and_expression();
+
+  Expr* parse_or_expression();
 
 
 

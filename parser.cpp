@@ -1,5 +1,6 @@
 #include "parser.hpp"
 
+
 #include <iostream>
 
 Parser::Parser(Symbol_table& syms, 
@@ -94,6 +95,32 @@ Parser::parse_multiplicative_expression()
 }
 
 Expr*
+Parser::parse_relational_expression() 
+{
+  parse_additive_expression();
+
+  Expr* lhs = parse_relational_expression();  
+  while (true) {
+    if (Token lt = match(Token::less)) {      
+      Expr* rhs = parse_additive_expression();
+      lhs = m_act.on_less_expression(lhs, rhs); 
+    }
+    if (Token gt = match(Token::greater)) {      
+      Expr* rhs = parse_additive_expression();
+      lhs = m_act.on_greater_expression(lhs, rhs); 
+    }
+    if (Token lte = match(Token::less_equal)) {      
+      Expr* rhs = parse_additive_expression();
+      lhs = m_act.on_lte_expression(lhs, rhs); 
+    }
+    if (Token gte = match(Token::greater_equal)) {      
+      Expr* rhs = parse_additive_expression();
+      lhs = m_act.on_gte_expression(lhs, rhs); 
+    }
+  }
+}
+
+Expr*
 Parser::parse_prefix_expression()
 {
   if (Token op = match(Token::minus)) {
@@ -141,4 +168,50 @@ Parser::parse_primary_expression()
   }
 
   throw std::runtime_error("expected factor");
+}
+
+Expr*
+Parser::parse_equality_expression()
+{
+  parse_relational_expression();
+
+  Expr* lhs = parse_equality_expression();  
+  while (true) {
+    if (Token equal = match(Token::equal_equal)) {      
+      Expr* rhs = parse_relational_expression();
+      lhs = m_act.on_equal_equal_expression(lhs, rhs);
+    }
+    if (Token no_eq = match(Token::bang_equal)) {      
+      Expr* rhs = parse_relational_expression();
+      lhs = m_act.on_bang_equal_expression(lhs, rhs);
+    }
+  }
+}
+
+Expr*
+Parser::parse_and_expression()
+{
+  parse_equality_expression();
+
+  Expr* lhs = parse_and_expression();  
+  while (true) {
+    if (Token kwand = match(Token::and_kw)) {      
+      Expr* rhs = parse_equality_expression();
+      lhs = m_act.on_and_expression(lhs, rhs); 
+    }
+  }
+}
+
+Expr*
+Parser::parse_or_expression()
+{
+  parse_and_expression();
+
+  Expr* lhs = parse_or_expression();  
+  while (true) {
+    if (Token kwor = match(Token::or_kw)) {      
+      Expr* rhs = parse_and_expression();
+      lhs = m_act.on_or_expression(lhs, rhs); 
+    }
+  }
 }

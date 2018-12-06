@@ -58,8 +58,57 @@ Actions::on_division_expression(Expr* e1, Expr* e2)
 Expr*
 Actions::on_remainder_expression(Expr* e1, Expr* e2)
 {
-  return m_build.make_rem(e1, e2);
+  return m_build.make_rem(e1, e2); 
 }
+
+Expr* 
+Actions::on_less_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_lt(e1, e2);
+}
+
+Expr* 
+Actions::on_greater_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_gt(e1, e2);
+}
+
+Expr* 
+Actions::on_lte_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_lte(e1, e2);
+}
+
+Expr* 
+Actions::on_gte_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_gte(e1, e2);
+}
+
+Expr* 
+Actions::on_equal_equal_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_eq(e1, e2);
+}
+
+Expr* 
+Actions::on_bang_equal_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_ne(e1, e2);
+}
+
+Expr* 
+Actions::on_and_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_and(e1, e2);
+}
+
+Expr* 
+Actions::on_or_expression(Expr* e1, Expr* e2)
+{
+	return m_build.make_or(e1, e2);
+}
+
 
 
 //Declaration Stuff here

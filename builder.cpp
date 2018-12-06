@@ -98,6 +98,14 @@ Builder::make_eq(Expr* e1, Expr* e2)
 }
 
 Expr*
+Builder::make_ne(Expr* e1, Expr* e2)
+{
+  Type bt = Bool_type();
+  std::tie(e1, e2) = require_same(e1, e2);
+  return new Ne_expr( e1, e2, &bt);
+}
+
+Expr*
 Builder::make_lt(Expr* e1, Expr* e2)
 {
   Type bt = Bool_type();

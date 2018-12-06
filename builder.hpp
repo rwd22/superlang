@@ -41,6 +41,8 @@ Expr* make_not(Expr* e1);
 
 Expr* make_eq(Expr* e1, Expr* e2);
 
+Expr* make_ne(Expr* e1, Expr* e2);
+
 Expr* make_lt(Expr* e1, Expr* e2);
 
 Expr* make_gt(Expr* e1, Expr* e2);
