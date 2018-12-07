@@ -44,6 +44,10 @@ public:
 
   Expr* on_or_expression(Expr* e1, Expr* e2);
 
+  Expr* on_cond_expression(Expr* e1, Expr* e2, Expr* e3);
+
+  Expr* on_not_expression(Expr* e1);
+
 //Declaration stuff here
 
 //scope stuff here

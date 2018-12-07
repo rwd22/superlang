@@ -109,6 +109,18 @@ Actions::on_or_expression(Expr* e1, Expr* e2)
 	return m_build.make_or(e1, e2);
 }
 
+Expr* 
+Actions::on_cond_expression(Expr* e1, Expr* e2, Expr* e3)
+{
+	return m_build.make_cond(e1, e2, e3);
+}
+
+Expr* 
+Actions::on_not_expression(Expr* e1)
+{
+	return m_build.make_not(e1);
+}
+
 
 
 //Declaration Stuff here

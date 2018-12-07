@@ -67,6 +67,8 @@ public:
 
   Expr* parse_or_expression();
 
+  Expr* parse_conditional_expression();
+
 
 
 

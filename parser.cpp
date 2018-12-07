@@ -59,7 +59,7 @@ Parser::parse_expression()
 Expr*
 Parser::parse_assignment_expression()
 {
-  Expr *expr = parse_additive_expression();
+  Expr *expr = parse_conditional_expression();
   if (match(Token::equal))
     return parse_assignment_expression();
   return expr;
@@ -130,6 +130,10 @@ Parser::parse_prefix_expression()
   if (Token op = match(Token::slash)) {
     Expr* arg = parse_prefix_expression();
     return m_act.on_reciprocal_expression(arg);
+  }
+  if (Token op = match(Token::not_kw)) {
+    Expr* arg = parse_prefix_expression();
+    return m_act.on_not_expression(arg);
   }
   parse_postfix_expression();
 }
@@ -212,6 +216,25 @@ Parser::parse_or_expression()
     if (Token kwor = match(Token::or_kw)) {      
       Expr* rhs = parse_and_expression();
       lhs = m_act.on_or_expression(lhs, rhs); 
+    }
+  }
+}
+
+Expr*
+Parser::parse_conditional_expression()
+{
+  parse_or_expression();
+
+  Expr* lhs = parse_or_expression();  
+  while (true) {
+    if (Token quest = match(Token::question)) {      
+      Expr* rhs1 = parse_expression();
+      if(Token col = match(Token::colon))
+      {
+        Expr* rhs2 = parse_and_expression();
+        lhs = m_act.on_cond_expression(lhs, rhs1, rhs2); //change to act on conditional
+      }
+      
     }
   }
 }
