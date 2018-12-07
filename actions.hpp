@@ -48,6 +48,18 @@ public:
 
   Expr* on_not_expression(Expr* e1);
 
+  //statements
+
+  Stmt* on_if_statement(Expr* e1, Stmt* s1, Stmt* s2);
+
+  Stmt* on_while_statement(Expr* e1, Stmt* s1);
+
+  Stmt* on_break_statement();
+
+  Stmt* on_continue_statement();
+
+  Stmt* on_expression_statement(Expr* e1);
+
 //Declaration stuff here
 
 //scope stuff here

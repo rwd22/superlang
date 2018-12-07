@@ -69,7 +69,17 @@ public:
 
   Expr* parse_conditional_expression();
 
+  Stmt* parse_statement();
 
+  Stmt* parse_if_statement();
+
+  Stmt* parse_while_statement();
+
+  Stmt* parse_break_statement();
+
+  Stmt* parse_continue_statement();
+
+  Stmt* parse_expression_statement();
 
 
 private:

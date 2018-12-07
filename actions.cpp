@@ -121,6 +121,35 @@ Actions::on_not_expression(Expr* e1)
 	return m_build.make_not(e1);
 }
 
+//statements
 
+Stmt* 
+Actions::on_if_statement(Expr* e1, Stmt* s1, Stmt* s2)
+{
+	return m_build.make_tern(e1, s1, s2);
+}
 
+Stmt* 
+Actions::on_while_statement(Expr* e1, Stmt* s1)
+{
+	return m_build.make_while(e1, s1);
+}
+
+Stmt* 
+Actions::on_break_statement()
+{
+	return m_build.make_break();
+}
+
+Stmt* 
+Actions::on_continue_statement()
+{
+	return m_build.make_continue();
+}
+
+Stmt* 
+Actions::on_expression_statement(Expr* e1)
+{
+	return m_build.make_expression(e1);
+}
 //Declaration Stuff here

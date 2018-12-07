@@ -232,9 +232,86 @@ Parser::parse_conditional_expression()
       if(Token col = match(Token::colon))
       {
         Expr* rhs2 = parse_and_expression();
-        lhs = m_act.on_cond_expression(lhs, rhs1, rhs2); //change to act on conditional
+        lhs = m_act.on_cond_expression(lhs, rhs1, rhs2);
       }
       
     }
   }
 }
+
+
+
+//statements
+
+Stmt*
+Parser::parse_statement()
+{
+    if (Token tok = match(Token::if_kw))
+    {
+      return parse_if_statement();
+    }
+    if (Token tok = match(Token::while_kw))
+    {
+      return parse_while_statement();
+    }
+    if (Token tok = match(Token::break_kw))
+    {
+      return parse_break_statement();
+    }
+    if (Token tok = match(Token::continue_kw))
+    {
+      return parse_continue_statement();
+    }
+
+
+
+    throw std::runtime_error("statement error");
+}
+
+Stmt*
+Parser::parse_if_statement()
+{
+    if (Token tok = match(Token::lparen))
+    {
+      Expr* expr = parse_expression();
+      expect(Token::rparen);
+      Stmt* stmt1 = parse_statement();
+      expect(Token::else_kw);
+      Stmt* stmt2 = parse_statement();
+      return m_act.on_if_statement(expr, stmt1, stmt2);
+    }
+}
+
+Stmt*
+Parser::parse_while_statement()
+{
+    if (Token tok = match(Token::lparen))
+    {
+      Expr* expr = parse_expression();
+      expect(Token::rparen);
+      Stmt* stmt = parse_statement();
+
+      return m_act.on_while_statement(expr, stmt);
+    }
+}
+
+Stmt*
+Parser::parse_break_statement()
+{
+  return m_act.on_break_statement();
+}
+
+Stmt*
+Parser::parse_continue_statement()
+{
+  return m_act.on_continue_statement();
+}
+
+Stmt*
+Parser::parse_expression_statement()
+{
+  Expr* expr = parse_expression();
+
+  return m_act.on_expression_statement(expr);
+}
+
