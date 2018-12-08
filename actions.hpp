@@ -48,6 +48,8 @@ public:
 
   Expr* on_not_expression(Expr* e1);
 
+  Expr* on_post_expression(std::vector<Expr*> argl, Expr* e1);
+
   //statements
 
   Stmt* on_if_statement(Expr* e1, Stmt* s1, Stmt* s2);
@@ -58,7 +60,11 @@ public:
 
   Stmt* on_continue_statement();
 
+  Stmt* on_skip_statement();
+
   Stmt* on_expression_statement(Expr* e1);
+
+  Stmt* on_block_statement(std::vector<Stmt*> ss);
 
 //Declaration stuff here
 

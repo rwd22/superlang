@@ -69,6 +69,8 @@ public:
 
   Expr* parse_conditional_expression();
 
+  //statements
+
   Stmt* parse_statement();
 
   Stmt* parse_if_statement();
@@ -80,6 +82,12 @@ public:
   Stmt* parse_continue_statement();
 
   Stmt* parse_expression_statement();
+
+  Stmt* parse_empty_statement();
+
+  Stmt* parse_block_statement();
+
+  Stmt* parse_return_statement();
 
 
 private:

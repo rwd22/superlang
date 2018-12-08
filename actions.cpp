@@ -121,6 +121,12 @@ Actions::on_not_expression(Expr* e1)
 	return m_build.make_not(e1);
 }
 
+Expr* 
+Actions::on_post_expression(std::vector<Expr*> argl, Expr* e1)
+{
+	return m_build.make_call(argl, e1);
+}
+
 //statements
 
 Stmt* 
@@ -145,6 +151,19 @@ Stmt*
 Actions::on_continue_statement()
 {
 	return m_build.make_continue();
+}
+
+Stmt* 
+Actions::on_skip_statement() 	//make this a rturn skip statement
+{
+	//return m_build.make_continue();
+	return nullptr;
+}
+
+Stmt* 
+Actions::on_block_statement(std::vector<Stmt*> ss)
+{
+	return m_build.make_block(ss);
 }
 
 Stmt* 

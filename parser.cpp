@@ -1,4 +1,6 @@
 #include "parser.hpp"
+#include "stmt.hpp"
+
 
 
 #include <iostream>
@@ -141,12 +143,17 @@ Parser::parse_prefix_expression()
 Expr*
 Parser::parse_postfix_expression()
 {
-  parse_primary_expression();
+  Expr* lhs = parse_primary_expression();
   while (true) {
     if (match(Token::lparen)) {
-      // parse list of arguments here
+      std::vector<Expr*> argl;
+      while (next_token_is_not(Token::rparen)) {
+        Expr * e = parse_expression();
+        argl.push_back(e);
+    }
+
       expect(Token::rparen);
-      // return nullptr
+      return m_act.on_post_expression(std::move(argl),lhs);
     }
     else {
       break;
@@ -246,64 +253,81 @@ Parser::parse_conditional_expression()
 Stmt*
 Parser::parse_statement()
 {
-    if (Token tok = match(Token::if_kw))
-    {
-      return parse_if_statement();
-    }
-    if (Token tok = match(Token::while_kw))
-    {
-      return parse_while_statement();
-    }
-    if (Token tok = match(Token::break_kw))
-    {
-      return parse_break_statement();
-    }
-    if (Token tok = match(Token::continue_kw))
-    {
-      return parse_continue_statement();
-    }
+  switch (lookahead()) {
+     case Token::semicolon:
+        return parse_empty_statement();
 
+      case Token::lbrace:
+        return parse_block_statement();
 
+      case Token::if_kw:
+        return parse_if_statement();
 
-    throw std::runtime_error("statement error");
+      case Token::while_kw:
+        return parse_while_statement();
+      
+      case Token::break_kw:
+        return parse_break_statement();
+
+      case Token::continue_kw:
+        return parse_continue_statement();
+
+      case Token::return_kw:
+        return parse_return_statement();
+      
+     // case Token::var_kw:
+      //case Token::ref_kw:
+       // return parse_declaration_statement();
+
+      default:
+        return parse_expression_statement();
+    }
 }
+
 
 Stmt*
 Parser::parse_if_statement()
 {
-    if (Token tok = match(Token::lparen))
-    {
-      Expr* expr = parse_expression();
-      expect(Token::rparen);
-      Stmt* stmt1 = parse_statement();
-      expect(Token::else_kw);
-      Stmt* stmt2 = parse_statement();
-      return m_act.on_if_statement(expr, stmt1, stmt2);
-    }
+    require(Token::if_kw);
+    expect(Token::lparen);
+    Expr* expr = parse_expression();
+    expect(Token::rparen);
+    Stmt* stmt1 = parse_statement();
+    expect(Token::else_kw);
+    Stmt* stmt2 = parse_statement();
+
+    return m_act.on_if_statement(expr, stmt1, stmt2);
+    
 }
 
 Stmt*
 Parser::parse_while_statement()
 {
-    if (Token tok = match(Token::lparen))
-    {
-      Expr* expr = parse_expression();
-      expect(Token::rparen);
-      Stmt* stmt = parse_statement();
+    require(Token::while_kw);
+    expect(Token::lparen);
+    Expr* expr = parse_expression();
+    expect(Token::rparen);
+    Stmt* stmt = parse_statement();
 
-      return m_act.on_while_statement(expr, stmt);
-    }
+    return m_act.on_while_statement(expr, stmt);
+    
 }
 
 Stmt*
 Parser::parse_break_statement()
 {
+  require(Token::break_kw);
+  expect(Token::semicolon);
+
   return m_act.on_break_statement();
 }
 
 Stmt*
 Parser::parse_continue_statement()
 {
+  require(Token::continue_kw);
+  expect(Token::semicolon);
+
   return m_act.on_continue_statement();
 }
 
@@ -311,7 +335,40 @@ Stmt*
 Parser::parse_expression_statement()
 {
   Expr* expr = parse_expression();
+  expect(Token::semicolon);
 
   return m_act.on_expression_statement(expr);
 }
+
+Stmt*
+Parser::parse_empty_statement()
+{
+  require(Token::semicolon);
+  return m_act.on_skip_statement();
+}
+
+Stmt*
+Parser::parse_block_statement()
+{
+  require(Token::lbrace);
+
+  std::vector<Stmt*> ss;
+  while (next_token_is_not(Token::rbrace)) {
+    Stmt * s = parse_statement();
+    ss.push_back(s);
+  }
+
+  expect(Token::rbrace);
+  return m_act.on_block_statement(std::move(ss));
+}
+
+Stmt*
+Parser::parse_return_statement()
+{
+  require(Token::return_kw);
+  Expr* ret = parse_expression();
+  expect(Token::semicolon);
+  return new Return_stmt(ret);
+}
+
 
