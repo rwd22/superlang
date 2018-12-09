@@ -174,7 +174,7 @@ Lexer::match_number()
     }
     else
     {
-      kind = Token::dec_literal;
+      kind = Token::integer_literal;
     }
 
   }

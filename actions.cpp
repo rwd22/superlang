@@ -17,6 +17,7 @@ Expr*
 Actions::on_integer_literal(Token const& tok)
 {
   int n = std::stoi(tok.get_lexeme().str());
+
   return m_build.make_int(n);
 }
 

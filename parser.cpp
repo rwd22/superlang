@@ -1,10 +1,12 @@
 #include "parser.hpp"
 #include "stmt.hpp"
+#include "expr.hpp"
 
 
 
 
 #include <iostream>
+
 
 Parser::Parser(Symbol_table& syms, 
                std::string const& input)
@@ -170,7 +172,13 @@ Parser::parse_primary_expression()
   if (Token tok = match(Token::integer_literal))
     return m_act.on_integer_literal(tok);
 
-  if (Token tok = match(Token::identifier)) //impliment later
+  if (Token tok = match(Token::dec_literal))
+    return m_act.on_integer_literal(tok);
+
+  if (Token tok = match(Token::bool_literal))
+    return m_act.on_boolean_literal(tok);
+
+  if (Token tok = match(Token::identifier))
     return m_act.on_id_expression(tok);
 
   if (match(Token::lparen)) {
@@ -179,7 +187,7 @@ Parser::parse_primary_expression()
     return expr;
   }
 
-  throw std::runtime_error("expected factor");
+  throw std::runtime_error("expected integer");
 }
 
 Expr*
@@ -386,7 +394,7 @@ void
 Parser::parse_program()
 {
   m_act.enter_scope();
-  parse_declaration_sequence();
+     parse_declaration_sequence();
   m_act.leave_scope();
 }
 
@@ -446,11 +454,16 @@ Parser::parse_object_definition()
 {
   Token tok = require(Token::var_kw);
   Token id = expect(Token::identifier);
+
   Token colon = expect(Token::colon);
+
   Type* type = parse_type();
 
+
   Token equal = expect(Token::equal);
+
   Expr* init = parse_expression();
+
   Token semi = expect(Token::semicolon);
 
   Decl* var = m_act.on_object_declaration(id, type, init); 
@@ -507,6 +520,7 @@ Parser::parse_declaration_sequence()
 {
   while(true)
   {
+
     if(Token end = match(Token::eof))
     {
       break;

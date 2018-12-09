@@ -13,20 +13,20 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "int x = 3;";
+  std::string test = "x+4;";
   
 
 
 
 
-  Lexer lexer(syms, test);
+ Lexer lexer(syms, test);
 
   for (Token tok; tok =lexer.get_next_token();) {
-   std::cout << tok << '\n';
+   std::cout << tok << '\n';}
 
   Parser parse(syms, test);
   parse.parse_program();
- }
+ 
 }
 
 
