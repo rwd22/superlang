@@ -89,6 +89,26 @@ public:
 
   Stmt* parse_return_statement();
 
+  Stmt* parse_declaration_statement();
+
+  //declarations
+
+  Decl* parse_declaration();
+
+ Decl* parse_declaration_sequence();
+
+  Decl* parse_local_declaration();
+
+  Decl* parse_object_definition();
+
+  Decl* parse_function_definition();
+
+  Decl* parse_variable_declaration();
+
+  Decl* parse_reference_definition();
+
+  Type* parse_type();
+
 
 private:
   Lexer m_lex;

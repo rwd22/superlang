@@ -12,6 +12,7 @@ public:
   enum Kind
   {
     break_stmt,
+    skip_stmt,
     cont_stmt,
     block_stmt,
     while_stmt,
@@ -40,6 +41,14 @@ struct Break_stmt : public Stmt
 public:
   Break_stmt()
     : Stmt(break_stmt)
+  { }
+};
+
+struct Skip_stmt : public Stmt
+{
+public:
+  Skip_stmt()
+    : Stmt(skip_stmt)
   { }
 };
 

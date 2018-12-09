@@ -2,6 +2,7 @@
 #include "expr.hpp"
 #include "stmt.hpp"
 #include "type.hpp"
+#include "name.hpp"
 
 Expr*
 Actions::on_boolean_literal(Token const& tok)
@@ -19,16 +20,25 @@ Actions::on_integer_literal(Token const& tok)
   return m_build.make_int(n);
 }
 
-//impliment this once stack stuff is done
 
-/*Expr*
+
+Expr*
 Actions::on_id_expression(Token const& tok)
 {
-  Decl* decl = m_stack.lookup(tok.get_lexeme());
+  Decl* decl = m_stack.lookup((tok.get_lexeme()).get_str());
   if (!decl)
     throw std::runtime_error("no matching declaration");
-  return m_builder.make_id(decl);
-}*/
+  return m_build.make_id(decl);
+}
+
+Decl*
+Actions::on_identifier(Token const& tok)
+{
+  Decl* decl = m_stack.lookup((tok.get_lexeme()).get_str());
+  if (!decl)
+    throw std::runtime_error("no matching declaration");
+  return decl;
+}
 
 Expr* 
 Actions::on_negation_expression(Expr* arg)
@@ -156,7 +166,7 @@ Actions::on_continue_statement()
 Stmt* 
 Actions::on_skip_statement() 	//make this a rturn skip statement
 {
-	//return m_build.make_continue();
+	return m_build.make_skip();
 	return nullptr;
 }
 
@@ -171,4 +181,59 @@ Actions::on_expression_statement(Expr* e1)
 {
 	return m_build.make_expression(e1);
 }
-//Declaration Stuff here
+//Declaration
+Decl* 
+Actions::on_object_declaration(Token id, Type* t1, Expr* e1)
+{
+	Scope* scope = get_current_scope();
+
+	if (scope->lookup((id.get_lexeme()).get_str()))
+    throw std::runtime_error("redefinition error"); 
+
+  	Name* name;
+  	name->str = (id.get_lexeme()).get_str();
+  	Decl *var = m_build.make_variable(name, t1, e1);
+
+  	scope->declare(var, (id.get_lexeme()).get_str());
+
+  	m_build.copy_initialize(var, e1);
+
+  	return var;
+}
+
+Decl* 
+Actions::on_reference_declaration(Token id, Type* t1, Expr* e1)
+{
+	Scope* scope = get_current_scope();
+
+	if (scope->lookup((id.get_lexeme()).get_str()))
+    throw std::runtime_error("redefinition error"); 
+
+  	Name* name;
+  	name->str = (id.get_lexeme()).get_str();
+  	Decl *ref = m_build.make_reference(name, t1, e1);
+
+  	scope->declare(ref, (id.get_lexeme()).get_str());
+
+  	m_build.reference_initialize(ref, e1);
+
+  	return ref;
+}
+
+Decl*
+Actions::on_function_declaration(Token id,  std::vector<Decl*> parms, Type* t1, Stmt* s)
+{
+	Scope* scope = get_current_scope();
+
+	if (scope->lookup((id.get_lexeme()).get_str()))
+	  throw std::runtime_error("redefinition error"); 
+
+  	Name* name;
+  	name->str = (id.get_lexeme()).get_str();
+
+	Decl* f = m_build.make_function(name, t1, parms, s);
+
+	scope->declare(f, (id.get_lexeme()).get_str());
+
+	return f;
+}

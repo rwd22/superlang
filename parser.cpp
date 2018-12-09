@@ -3,6 +3,7 @@
 
 
 
+
 #include <iostream>
 
 Parser::Parser(Symbol_table& syms, 
@@ -169,8 +170,8 @@ Parser::parse_primary_expression()
   if (Token tok = match(Token::integer_literal))
     return m_act.on_integer_literal(tok);
 
-  //if (Token tok = match(Token::identifier)) //impliment later
-   // return m_act.on_id_expression(tok);
+  if (Token tok = match(Token::identifier)) //impliment later
+    return m_act.on_id_expression(tok);
 
   if (match(Token::lparen)) {
     Expr* expr = parse_expression();
@@ -275,9 +276,9 @@ Parser::parse_statement()
       case Token::return_kw:
         return parse_return_statement();
       
-     // case Token::var_kw:
-      //case Token::ref_kw:
-       // return parse_declaration_statement();
+      case Token::var_kw:
+      case Token::ref_kw:
+        return parse_declaration_statement();
 
       default:
         return parse_expression_statement();
@@ -320,6 +321,13 @@ Parser::parse_break_statement()
   expect(Token::semicolon);
 
   return m_act.on_break_statement();
+}
+
+Stmt*
+Parser::parse_declaration_statement()
+{
+  Decl* d = parse_local_declaration();
+  return new Loc_def_stmt(d);
 }
 
 Stmt*
@@ -372,3 +380,158 @@ Parser::parse_return_statement()
 }
 
 
+//declarations
+
+void
+Parser::parse_program()
+{
+  m_act.enter_scope();
+  parse_declaration_sequence();
+  m_act.leave_scope();
+}
+
+Decl*
+Parser::parse_local_declaration()
+{
+  return parse_variable_declaration();
+}
+
+Decl*
+Parser::parse_declaration()
+{
+    switch (lookahead()) {
+     case Token::var_kw:
+        return parse_variable_declaration();
+
+      case Token::fun_kw:
+        return parse_function_definition();
+
+      case Token::let_kw:
+        return parse_variable_declaration();
+    }
+}
+
+Decl* 
+Parser::parse_variable_declaration()
+{
+  switch (lookahead()) {
+     case Token::var_kw:
+        return parse_object_definition();
+
+      case Token::let_kw:
+        return parse_reference_definition();
+
+    }
+}
+
+Decl*
+Parser::parse_reference_definition()
+{
+  Token tok = require(Token::let_kw);
+  Token id = expect(Token::identifier);
+  Token colon = expect(Token::colon);
+  Type* type = parse_type();
+
+  Token equal = expect(Token::equal);
+  Expr* init = parse_expression();
+  Token semi = expect(Token::semicolon);
+
+  Decl* ref = m_act.on_reference_declaration(id, type, init); 
+
+  return ref;
+}
+
+Decl*
+Parser::parse_object_definition()
+{
+  Token tok = require(Token::var_kw);
+  Token id = expect(Token::identifier);
+  Token colon = expect(Token::colon);
+  Type* type = parse_type();
+
+  Token equal = expect(Token::equal);
+  Expr* init = parse_expression();
+  Token semi = expect(Token::semicolon);
+
+  Decl* var = m_act.on_object_declaration(id, type, init); 
+
+  return var;
+}
+
+Decl*
+Parser::parse_function_definition()
+{
+  Token tok = require(Token::fun_kw);
+  Token id = expect(Token::identifier);
+  
+  Token lparen = expect(Token::lparen);
+  m_act.enter_scope();
+
+  std::vector<Decl*> parms;
+  if (next_token_is_not(Token::rparen))
+  {
+    while (next_token_is_not(Token::rparen)) {
+        Token tok = m_lex.get_next_token();
+        Decl* decl = m_act.on_identifier(tok);
+        expect(Token::colon);
+        Type* idtype = parse_type();
+        parms.push_back(decl);
+
+
+    }
+  }
+
+      expect(Token::rparen);
+
+  Token rparen = expect(Token::rparen);
+
+  Token arrow = expect(Token::arrow);
+  Type* type = parse_type();
+
+
+
+
+  Stmt* body = parse_statement();
+
+  Decl* fn = m_act.on_function_declaration(id, parms, type, body);
+
+  m_act.leave_scope();
+
+  return nullptr; //var;
+}
+
+
+
+Decl*
+Parser::parse_declaration_sequence()
+{
+  while(true)
+  {
+    if(Token end = match(Token::eof))
+    {
+      break;
+    }
+    else
+      return parse_declaration();
+  }
+}
+
+Type*
+Parser::parse_type()
+{
+  if(Token tok = match(Token::bool_kw))
+  {
+    Type b = Bool_type();
+    return &b;
+  }
+  if(Token tok = match(Token::int_kw))
+  {
+    Type i = Int_type();
+    return &i;
+  }
+  if(Token tok = match(Token::float_kw))
+  {
+    Type f = Float_type();
+    return &f;
+  }
+}

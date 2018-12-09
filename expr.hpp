@@ -438,17 +438,17 @@ struct Id_expr : Expr
 {
 
 public:
-	Id_expr(Name* id, Type* t)
-		: Expr(id_expr), m_id(id), m_type(t)
+	Id_expr(Decl* d, Type* t)
+		: Expr(id_expr), m_d(d), m_type(t)
 	{ }
 
-	Name* get_id() const {return m_id;}
+	Decl* get_d() const {return m_d;}
 	Type* get_type() const { return m_type; }
 
 
 private:
 
-	Name* m_id;
+	Decl* m_d;
 	Type* m_type;
 		
 };

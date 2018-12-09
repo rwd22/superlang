@@ -26,6 +26,8 @@ public:
     return a.m_str != b.m_str;
   }
 
+  virtual std::string get_str() const { return *m_str; }  
+
 private:
   std::string const* m_str;  
 };

@@ -2,6 +2,7 @@
 
 #include "token.hpp"
 #include "builder.hpp"
+#include "scope.hpp"
 
 
 class Expr;
@@ -50,6 +51,7 @@ public:
 
   Expr* on_post_expression(std::vector<Expr*> argl, Expr* e1);
 
+
   //statements
 
   Stmt* on_if_statement(Expr* e1, Stmt* s1, Stmt* s2);
@@ -66,13 +68,29 @@ public:
 
   Stmt* on_block_statement(std::vector<Stmt*> ss);
 
-//Declaration stuff here
+  //declarations
+
+  Decl* on_object_declaration(Token id, Type* t1, Expr* e1);
+
+  Decl* on_function_declaration(Token id,  std::vector<Decl*> parms, Type* t1, Stmt* s);
+
+  Decl* on_reference_declaration(Token id, Type* t1, Expr* e1);
+
+  Decl* on_identifier(Token const& tok);
+
+
 
 //scope stuff here
+
+  void enter_scope() { m_stack.emplace_back(); }
+  
+  void leave_scope() { m_stack.pop_back(); }
+  
+  Scope* get_current_scope() { return &m_stack.back(); }
 
 
 private:
   Builder m_build;
 
-  //Scope_stack m_stack;
+  Scope_stack m_stack;
 };

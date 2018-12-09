@@ -71,6 +71,7 @@ Expr* make_assign(Expr* e1, Expr* e2);
 
 Expr* make_call(std::vector<Expr*> const& es, Expr* e1);
 
+Expr* make_id(Decl* d);
 
 
 
@@ -88,6 +89,8 @@ Stmt* make_while(Expr* e, Stmt* s1);
 
 Stmt* make_break();
 
+Stmt* make_skip();
+
 Stmt* make_continue();
 
 Stmt* make_expression(Expr* e);
@@ -102,6 +105,9 @@ Decl* make_variable(Name* n, Type* t, Expr* e);
 Decl* make_function(Name* n, Type* t, std::vector<Decl*> decls, Stmt* s);
 
 Decl* make_reference(Name* n, Type* t, Expr* e);
+
+
+Type* get_reference_type(Type* t) {return new Ref_type(t);}
 
 
 

@@ -272,6 +272,12 @@ Builder::make_continue()
 }
 
 Stmt*
+Builder::make_skip()
+{
+  return new Skip_stmt();
+}
+
+Stmt*
 Builder::make_expression(Expr* e)
 {
   return new Expr_stmt(e);
@@ -292,6 +298,20 @@ Builder::make_return(Decl* d, Expr* e)
   copy_initialize(var, e);
   
   return new Return_stmt(var->get_initializer());
+}
+
+Expr*
+Builder::make_id(Decl* d)
+{
+  Type* t;
+  if (d->is_object() || d->is_reference())
+    t = get_reference_type(d->get_type());
+  else if (d->is_function())
+    t = d->get_type();
+  else
+    throw std::logic_error("invalid id-expression");
+
+  return new Id_expr(d, t);
 }
 
 

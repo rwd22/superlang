@@ -13,7 +13,7 @@ main()
 
   Symbol_table syms;
 
-  std::string test = "if(a==true);";
+  std::string test = "int x = 3;";
   
 
 
@@ -23,6 +23,9 @@ main()
 
   for (Token tok; tok =lexer.get_next_token();) {
    std::cout << tok << '\n';
+
+  Parser parse(syms, test);
+  parse.parse_program();
  }
 }
 
